@@ -1,4 +1,4 @@
-package com.flight.flightApi.Advice;
+package com.flight.flightApi.Exception;
 
 import org.springframework.stereotype.Component;
 

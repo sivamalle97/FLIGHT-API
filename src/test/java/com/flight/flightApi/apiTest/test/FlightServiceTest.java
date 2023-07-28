@@ -1,4 +1,4 @@
-package com.flight.flightApi.test;
+package com.flight.flightApi.apiTest.test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -16,8 +16,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.flight.flightApi.Entity.Flight;
 import com.flight.flightApi.dto.FlightDto;
-import com.flight.flightApi.model.Flight;
 import com.flight.flightApi.repository.FlightRepository;
 import com.flight.flightApi.service.impl.FlightServiceImpl;
 
@@ -34,7 +34,8 @@ public class FlightServiceTest {
 	private FlightDto dto;
 
 
-	@Test void findByOriginAndDestionation_return() { 
+	@Test
+	public void findByOriginAndDestionation_return() { 
 		Flight flight1 = new Flight("A101","AMS",LocalTime.of(11, 00),LocalTime.of(17, 00),"DEL",850);
 		Flight flight2 = new Flight("B101","AMS",LocalTime.of(12,00),LocalTime.of(19, 30),"BOM",750); 
 		Flight flight3 = new Flight("C101","AMS",LocalTime.of(13, 00),LocalTime.of(18, 30),"BLR",800);
@@ -42,9 +43,9 @@ public class FlightServiceTest {
 			when(repo.findByOriginAndDestination(anyString(),anyString())).thenReturn(
 					flightList);
 
-			List<Flight> existingFlight =
+			List<FlightDto> existingFlight =
 					impl.findAll(flight1.getOrigin(),flight1.getDestination(),flight1.getPrice(),
-							(Duration.between(flight1.getDepatureTime(),flight1.getArrivalTime())).
+							(Duration.between(flight1.getDepartureTime(),flight1.getArrivalTime())).
 							toHours()); 
 			assertNotNull(existingFlight);
 			assertThat(existingFlight.size()).isNotEqualTo(null); 

@@ -1,4 +1,4 @@
-package com.flight.flightApi.Advice;
+package com.flight.flightApi.Exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
-public class MyExceptionHandler {
+public class GlobalExceptionHandler {
 	
 	
 	@ExceptionHandler(DataNotFoundInDbException.class)

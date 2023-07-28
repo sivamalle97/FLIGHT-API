@@ -1,10 +1,9 @@
-package com.flight.flightApi.model;
+package com.flight.flightApi.Entity;
 
 import java.time.LocalTime;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.validation.constraints.NotBlank;
 
@@ -17,7 +16,7 @@ import lombok.Data;
 public class Flight {
 
 	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	//@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Integer id;
 	
 	private String flightNumber;
@@ -28,17 +27,15 @@ public class Flight {
 	@NotBlank
 	private String destination;
 	
-	@JsonFormat(pattern="HH:mm")
-	private LocalTime depatureTime;
+	//@Column(name="depatureTime")
+	//@JsonFormat(pattern="HH:mm")
+	private LocalTime departureTime;
 	
-	@JsonFormat(pattern="HH:mm")
+	//@Column(name="arrivalTime")
+	//@JsonFormat(pattern="HH:mm")
 	private LocalTime arrivalTime;
 	
 	private Integer price;
-	
-	
-	
-	
 	
 
 	public Flight(String flightNumber, String origin, LocalTime depatureTime, LocalTime arrivalTime, String destination,
@@ -47,7 +44,7 @@ public class Flight {
 		this.flightNumber = flightNumber;
 		this.origin = origin;
 		this.destination = destination;
-		this.depatureTime = depatureTime;
+		this.departureTime = depatureTime;
 		this.arrivalTime = arrivalTime;
 		this.price = price;
 		
