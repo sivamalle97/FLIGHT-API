@@ -8,7 +8,7 @@ import lombok.Data;
 @Data
 public class FlightDto {
 	
-	private Integer id;
+	private Long id;
 	
 	private String flightNumber;
 	
@@ -20,7 +20,7 @@ public class FlightDto {
 	
 	private LocalTime arrivalTime;
 	
-	private Integer price;
+	private Double price;
 
 	
 }

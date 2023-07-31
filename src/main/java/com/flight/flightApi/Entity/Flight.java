@@ -2,22 +2,28 @@ package com.flight.flightApi.Entity;
 
 import java.time.LocalTime;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.validation.constraints.NotBlank;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-
-import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
-@Data
+@Setter
+@Getter
+@NoArgsConstructor
 public class Flight {
 
+
+	
+
 	@Id
-	//@GeneratedValue(strategy=GenerationType.IDENTITY)
-	private Integer id;
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	private Long id;
 	
 	private String flightNumber;
 	
@@ -27,36 +33,25 @@ public class Flight {
 	@NotBlank
 	private String destination;
 	
-	//@Column(name="depatureTime")
-	//@JsonFormat(pattern="HH:mm")
 	private LocalTime departureTime;
 	
-	//@Column(name="arrivalTime")
-	//@JsonFormat(pattern="HH:mm")
 	private LocalTime arrivalTime;
 	
-	private Integer price;
-	
+	private Double price;
 
-	public Flight(String flightNumber, String origin, LocalTime depatureTime, LocalTime arrivalTime, String destination,
-			Integer price) {
+	public Flight(String flightNumber, @NotBlank String origin, LocalTime arrivalTime,
+			LocalTime departureTime, @NotBlank String destination, Double price) {
 		super();
 		this.flightNumber = flightNumber;
 		this.origin = origin;
 		this.destination = destination;
-		this.departureTime = depatureTime;
+		this.departureTime = departureTime;
 		this.arrivalTime = arrivalTime;
 		this.price = price;
-		
-			
-	}
-
-
-	public Flight() {
-		super();
 	}
 
 	
+		
 	
 
 }

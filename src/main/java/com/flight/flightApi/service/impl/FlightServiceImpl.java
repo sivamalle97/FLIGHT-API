@@ -1,6 +1,9 @@
 package com.flight.flightApi.service.impl;
 
 import java.time.Duration;
+import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -13,6 +16,8 @@ import org.springframework.stereotype.Service;
 import com.flight.flightApi.Entity.Flight;
 import com.flight.flightApi.Exception.DataNotFoundInDbException;
 import com.flight.flightApi.dto.FlightDto;
+import com.flight.flightApi.enumaration.SortField;
+import com.flight.flightApi.enumaration.SortOrder;
 import com.flight.flightApi.repository.FlightRepository;
 import com.flight.flightApi.service.FlightService;
 
@@ -26,7 +31,7 @@ public class FlightServiceImpl implements FlightService {
 
 	@Autowired
 	private FlightRepository flightReposioty;
-
+	List<Flight> flightsList;
 
 
 	/*
@@ -37,28 +42,27 @@ public class FlightServiceImpl implements FlightService {
 	 * This price and duration parameters are optional 
 	 * Finally we are mapping Flights List data to Flights DTO List data to show end user.
 	 */
-	@Override
-	public List<FlightDto> findAll(String origin, String destination,Integer price, Long mduration) {
 
-		List<Flight> flightsList = flightReposioty.findByOriginAndDestination(origin, destination);
+	@Override
+	public List<FlightDto> findAll(String origin, String destination,SortField sortField,SortOrder sortOrder) {
+
+		flightsList = flightReposioty.findByOriginAndDestination(origin, destination);
+		List<FlightDto> flightsListDto = new ArrayList<>();
 		if(flightsList.isEmpty()) {
 			throw new DataNotFoundInDbException("DATA IS NOT FOUND");
-		}
-		if(price == null && mduration == null) {
-			LOGGER.info("FETCHING DATA BY USING ORIGIN AND DESTINATION");
-			return flightsList.stream().map(flight -> mapToDto(flight)).collect(Collectors.toList());
-
 		}else {
-			Comparator<Flight> byPrice = Comparator.comparing(Flight::getPrice);
-			Comparator<Flight> byDuration = Comparator.comparing(flight->{
-				Duration duration = Duration.between(flight.getDepartureTime(), flight.getArrivalTime());
-				return !duration.isNegative() && !duration.isZero();});
-
-			 flightsList.stream().sorted(byPrice).sorted(byDuration).collect(Collectors.toList());
-			LOGGER.info("FETCHING DATA AFTER USING FILTER WITH PRICE AND DURATION");
-			return flightsList.stream().map(flight -> mapToDto(flight)).collect(Collectors.toList());
+			if(sortField.equals(SortField.PRICE)) {
+				flightsList = sortPrice(sortOrder);
+				flightsListDto = flightsList.stream().map(flight->mapToDto(flight)).collect(Collectors.toList());
+				return flightsListDto;
+			}else if(sortField.equals(SortField.DURATION)) {
+				flightsList = sortDuration(sortOrder);
+				flightsListDto = flightsList.stream().map(flight->mapToDto(flight)).collect(Collectors.toList());
+				return flightsListDto;
+			}
+			return flightsListDto;
 		}
-	}
+	} 
 
 	public FlightDto mapToDto(Flight flight) { 
 		FlightDto dto = new FlightDto();
@@ -72,23 +76,34 @@ public class FlightServiceImpl implements FlightService {
 		return dto;
 	}
 
+	private List<Flight> sortPrice(SortOrder sortOrder){
+		if(sortOrder.equals(SortOrder.DESC)) {
+			Collections.sort(flightsList, Comparator.comparing(Flight::getPrice).reversed());
+		}else if(sortOrder.equals(SortOrder.ASC)){
+			Collections.sort(flightsList, Comparator.comparing(Flight::getPrice));
+		}
+		return flightsList;
+	}
+	private List<Flight> sortDuration(SortOrder sortOrder){
+		if(sortOrder.equals(SortOrder.DESC)) {
+			Collections.sort(flightsList,Comparator.comparing(flight->{
+				Duration duration = Duration.between(((Flight) flight).getDepartureTime(), ((Flight) flight).getArrivalTime());
+				return !duration.isNegative() && !duration.isZero();}).reversed());
+		}else if(sortOrder.equals(SortOrder.ASC)){
+			Collections.sort(flightsList, Comparator.comparing(flight->{
+				Duration duration = Duration.between(flight.getDepartureTime(), flight.getArrivalTime());
+				return !duration.isNegative() && !duration.isZero();}));
+		}
+		return flightsList;
+	}
+
 
 }
-// price with sort
-//Directly duration
-//flightsList = flightsList.stream()
-//.filter(flight->flight.getPrice()<=price)
-//.filter(flight->{
-//	Duration duration = Duration.between(flight.getDepatureTime(), flight.getArrivalTime());
-//	return !duration.isNegative() && !duration.isZero() && duration.toHours()>=minDuration ;})
-//.collect(Collectors.toList());
 
-/*
 
-flightsList.stream().filter(flight-> {
-		Duration duration = Duration.between(flight.getDepatureTime(), flight.getArrivalTime());
-		return !duration.isNegative() && !duration.isZero() &&
 
-				duration.compareTo(minDuration)>=0 && 
-				flight.getPrice().compareTo(price) >= 0
-				;})*/
+
+
+
+
+

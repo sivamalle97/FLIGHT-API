@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.flight.flightApi.Exception.FiledNotFoundException;
 import com.flight.flightApi.dto.FlightDto;
+import com.flight.flightApi.enumaration.SortField;
+import com.flight.flightApi.enumaration.SortOrder;
 import com.flight.flightApi.service.FlightService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -35,13 +37,15 @@ public class FlightRestController {
 	@GetMapping("/all/{origin}/{destination}")
 	public ResponseEntity<List<FlightDto>> getAllFlights(@PathVariable String origin,
 			@PathVariable String destination,
-			@RequestParam(value="price", required=false) Integer price,
-			@RequestParam(value="duration",required=false) Long duration){
+			@RequestParam(value="sortField",required =false) SortField sortField,
+			@RequestParam(value="sortOrder",required =false) SortOrder sortOrder)
+	{
 		if(origin == null && destination == null) {
 			throw new FiledNotFoundException("Both Origin and Destionation should be enter");
 		}
-		List<FlightDto> list = flightService.findAll(origin, destination, price, duration);
+		List<FlightDto> list = flightService.findAll(origin, destination, sortField,sortOrder);
 		LOGGER.info("Getting list of flights base on Origin and Destination");
 		return ResponseEntity.ok(list);
 	}
+	
 }
