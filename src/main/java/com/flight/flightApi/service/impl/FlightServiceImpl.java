@@ -1,13 +1,12 @@
 package com.flight.flightApi.service.impl;
 
 import java.time.Duration;
-import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import com.flight.flightApi.Entity.Flight;
 import com.flight.flightApi.Exception.DataNotFoundInDbException;
+import com.flight.flightApi.Exception.FiledNotFoundException;
 import com.flight.flightApi.dto.FlightDto;
 import com.flight.flightApi.enumaration.SortField;
 import com.flight.flightApi.enumaration.SortOrder;
@@ -30,8 +30,9 @@ public class FlightServiceImpl implements FlightService {
 	private static final Logger LOGGER = LoggerFactory.getLogger(FlightServiceImpl.class);
 
 	@Autowired
-	private FlightRepository flightReposioty;
-	List<Flight> flightsList;
+	private  FlightRepository flightRepository;
+
+	List<FlightDto> flightsListDto;
 
 
 	/*
@@ -42,26 +43,24 @@ public class FlightServiceImpl implements FlightService {
 	 * This price and duration parameters are optional 
 	 * Finally we are mapping Flights List data to Flights DTO List data to show end user.
 	 */
+	@Override
+	public List<FlightDto> flightsList(String origin, String destination) {
+		validation(origin, destination);
+		List<Flight> list = flightRepository.findByOriginAndDestination(origin, destination);
+		if(list.isEmpty()) {
+			throw new DataNotFoundInDbException("DATA IS NOT FOUND");
+		}
+		return list.stream().map(flight->mapToDto(flight)).collect(Collectors.toList());
+	}
 
 	@Override
-	public List<FlightDto> findAll(String origin, String destination,SortField sortField,SortOrder sortOrder) {
+	public List<FlightDto> sortFlights(List<FlightDto> flightDto,SortOrder priceSort,SortOrder durationSort) {
+		flightsListDto = flightDto;
+		System.out.println(flightsListDto.size()+"   SIZE----------------------------");
+		flightsListDto = priceSortMethod(priceSort);
+		flightsListDto = durationSortMethod(durationSort);
+		return flightsListDto;
 
-		flightsList = flightReposioty.findByOriginAndDestination(origin, destination);
-		List<FlightDto> flightsListDto = new ArrayList<>();
-		if(flightsList.isEmpty()) {
-			throw new DataNotFoundInDbException("DATA IS NOT FOUND");
-		}else {
-			if(sortField.equals(SortField.PRICE)) {
-				flightsList = sortPrice(sortOrder);
-				flightsListDto = flightsList.stream().map(flight->mapToDto(flight)).collect(Collectors.toList());
-				return flightsListDto;
-			}else if(sortField.equals(SortField.DURATION)) {
-				flightsList = sortDuration(sortOrder);
-				flightsListDto = flightsList.stream().map(flight->mapToDto(flight)).collect(Collectors.toList());
-				return flightsListDto;
-			}
-			return flightsListDto;
-		}
 	} 
 
 	public FlightDto mapToDto(Flight flight) { 
@@ -76,32 +75,48 @@ public class FlightServiceImpl implements FlightService {
 		return dto;
 	}
 
-	private List<Flight> sortPrice(SortOrder sortOrder){
-		if(sortOrder.equals(SortOrder.DESC)) {
-			Collections.sort(flightsList, Comparator.comparing(Flight::getPrice).reversed());
-		}else if(sortOrder.equals(SortOrder.ASC)){
-			Collections.sort(flightsList, Comparator.comparing(Flight::getPrice));
+	private static void validation(String origin, String destination) {
+		if(origin == null || origin.isEmpty() || destination == null  || origin.isEmpty() ) {
+			throw new FiledNotFoundException("Both Origin and Destionation should be enter");
 		}
-		return flightsList;
 	}
-	private List<Flight> sortDuration(SortOrder sortOrder){
-		if(sortOrder.equals(SortOrder.DESC)) {
-			Collections.sort(flightsList,Comparator.comparing(flight->{
-				Duration duration = Duration.between(((Flight) flight).getDepartureTime(), ((Flight) flight).getArrivalTime());
-				return !duration.isNegative() && !duration.isZero();}).reversed());
-		}else if(sortOrder.equals(SortOrder.ASC)){
-			Collections.sort(flightsList, Comparator.comparing(flight->{
-				Duration duration = Duration.between(flight.getDepartureTime(), flight.getArrivalTime());
-				return !duration.isNegative() && !duration.isZero();}));
+
+	public List<FlightDto> priceSortMethod(SortOrder priceSort){
+		//if(StringUtils.isNotBlank(priceSort.name()) || StringUtils.isNotEmpty(priceSort.name())) {
+		if(priceSort.name()!= null || !priceSort.name().isEmpty()) {
+			if(priceSort.equals(SortOrder.DESC)) {
+				flightsListDto.sort(Comparator.comparing(FlightDto::getPrice).reversed());
+			}else if(priceSort.equals(SortOrder.ASC)){
+				flightsListDto.sort(Comparator.comparing(FlightDto::getPrice));
+				System.out.println(flightsListDto.size()+"   AFter SIZE----------------------------");
+			}
+			return flightsListDto;
+		}else {
+			throw new DataNotFoundInDbException("priceSort field should be enter");
 		}
-		return flightsList;
 	}
+	public List<FlightDto> durationSortMethod(SortOrder durationSort){
+		//if(StringUtils.isNotBlank(durationSort.name()) || StringUtils.isNotEmpty(durationSort.name())) {
+		if(durationSort.name()!= null || !durationSort.name().isEmpty()) {
+			if(durationSort.equals(SortOrder.DESC)) {
+				flightsListDto.sort(Comparator.comparing(flight->Duration.between(((FlightDto) flight).getDepartureTime(),(((FlightDto) flight).getArrivalTime()))).reversed());
+			}else if(durationSort.equals(SortOrder.ASC)){
+				flightsListDto.sort(Comparator.comparing(flight->Duration.between(flight.getDepartureTime(), flight.getArrivalTime())));
+			}
+			return flightsListDto;
+		}else {
+			throw new DataNotFoundInDbException("durationSort field should be enter");
+		}
+	}
+
+
 
 
 }
 
 
-
+//Use String Utils at null and empty check
+//if priceSort  null and value not equal enum value we need to throw exception, 
 
 
 

@@ -1,54 +1,47 @@
 package com.flight.flightApi.Entity;
 
-import java.time.LocalTime;
+import java.time.LocalDateTime;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
-import lombok.Getter;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Entity
-@Setter
-@Getter
 @NoArgsConstructor
+
+@AllArgsConstructor
+@Data
 public class Flight {
-
-
-	
-
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
 	
+	@NotBlank
+	@NotNull
 	private String flightNumber;
 	
 	@NotBlank
+	@NotNull
 	private String origin;
 	
 	@NotBlank
+	@NotNull
 	private String destination;
 	
-	private LocalTime departureTime;
+	private LocalDateTime departureTime;
 	
-	private LocalTime arrivalTime;
+	private LocalDateTime arrivalTime;
 	
 	private Double price;
 
-	public Flight(String flightNumber, @NotBlank String origin, LocalTime arrivalTime,
-			LocalTime departureTime, @NotBlank String destination, Double price) {
-		super();
-		this.flightNumber = flightNumber;
-		this.origin = origin;
-		this.destination = destination;
-		this.departureTime = departureTime;
-		this.arrivalTime = arrivalTime;
-		this.price = price;
-	}
+	
 
 	
 		

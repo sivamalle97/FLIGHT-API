@@ -1,6 +1,6 @@
 package com.flight.flightApi.dto;
 
-import java.time.LocalTime;
+import java.time.LocalDateTime;
 
 import lombok.Data;
 
@@ -16,9 +16,9 @@ public class FlightDto {
 	
 	private String destination;
 	
-	private LocalTime departureTime;
+	private LocalDateTime departureTime;
 	
-	private LocalTime arrivalTime;
+	private LocalDateTime arrivalTime;
 	
 	private Double price;
 

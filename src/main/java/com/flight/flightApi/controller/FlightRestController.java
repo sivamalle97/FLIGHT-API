@@ -2,6 +2,8 @@ package com.flight.flightApi.controller;
 
 import java.util.List;
 
+import javax.validation.constraints.NotNull;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.flight.flightApi.Exception.FiledNotFoundException;
 import com.flight.flightApi.dto.FlightDto;
 import com.flight.flightApi.enumaration.SortField;
 import com.flight.flightApi.enumaration.SortOrder;
@@ -35,17 +36,19 @@ public class FlightRestController {
 	 * It will throw FileNotFoundException Exception
 	 */
 	@GetMapping("/all/{origin}/{destination}")
-	public ResponseEntity<List<FlightDto>> getAllFlights(@PathVariable String origin,
+	public ResponseEntity<List<FlightDto>> getAllFlights(
+			@PathVariable String origin,
 			@PathVariable String destination,
-			@RequestParam(value="sortField",required =false) SortField sortField,
-			@RequestParam(value="sortOrder",required =false) SortOrder sortOrder)
+			@RequestParam(value="priceSort" ,required =false) SortOrder priceSort,
+			@RequestParam(value="durationSort",required =false) SortOrder durationSort)
 	{
-		if(origin == null && destination == null) {
-			throw new FiledNotFoundException("Both Origin and Destionation should be enter");
+		List<FlightDto> flights = flightService.flightsList(origin, destination);
+		if(priceSort != null || durationSort != null) {
+			flights = flightService.sortFlights(flights, priceSort,durationSort);
 		}
-		List<FlightDto> list = flightService.findAll(origin, destination, sortField,sortOrder);
 		LOGGER.info("Getting list of flights base on Origin and Destination");
-		return ResponseEntity.ok(list);
+		return ResponseEntity.ok(flights);
+
 	}
-	
+
 }
