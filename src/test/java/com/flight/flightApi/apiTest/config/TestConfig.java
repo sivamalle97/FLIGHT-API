@@ -25,11 +25,7 @@ public class TestConfig {
 		return new ModelMapper();
 	}
 
-	@Bean
-	public SortField sortField() {
-		return  null;
-	}
-
+	
 	@Bean
 	public SortOrder sortOrder() {
 		return null;

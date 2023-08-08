@@ -3,7 +3,6 @@ package com.flight.flightApi.apiTest.repo;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
@@ -30,7 +29,6 @@ public class FlightRepositoryTest {
 		repo.save(flight3);
 		List<Flight> flightNew = this.repo.findByOriginAndDestination(flight1.getOrigin(),flight1.getDestination());
 
-		// then - verify the output
 		assertThat(flightNew).size().isNotNull();
 	}
 }

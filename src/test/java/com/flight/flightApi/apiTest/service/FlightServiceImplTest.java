@@ -9,6 +9,7 @@ import static org.mockito.Mockito.lenient;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,9 +19,12 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
 
 import com.flight.flightApi.Entity.Flight;
+import com.flight.flightApi.apiTest.config.TestConfig;
 import com.flight.flightApi.dto.FlightDto;
 import com.flight.flightApi.enumaration.SortField;
 import com.flight.flightApi.enumaration.SortOrder;
@@ -36,13 +40,15 @@ public class FlightServiceImplTest {
 	@InjectMocks
 	private FlightServiceImpl impl;
 
-	@Autowired
-	SortField sortField;
+
 
 	@Autowired
 	SortOrder sortOrder;
 
 	List<Flight> flightList;
+	List<FlightDto> flightListDto;
+	
+
 
 	@BeforeEach
 	public void setup() {
@@ -56,11 +62,20 @@ public class FlightServiceImplTest {
 		flightList.add(flight3);
 	}
 
-
 	@Test
-	public void testFindFlightsWithAsscendingPrice() { 		
+	public void testFindFlightsList() {
 		Mockito.when(repo.findByOriginAndDestination(anyString(), anyString())).thenReturn(flightList);
-		List<FlightDto> existingFlight =impl.findAll("AMS","DEL", SortField.PRICE,SortOrder.ASC);
+		List<FlightDto> existingFlight =impl.flightsList("AMS","DEL");
+		assertNotNull(existingFlight);
+		assertEquals(3,existingFlight.size());
+	}
+	
+	
+	@Test
+	public void testFindFlightsWithAsscendingPriceDescendingDuration() { 		
+		lenient().when(repo.findByOriginAndDestination(anyString(), anyString())).thenReturn(flightList);
+		flightListDto =  flightList.stream().map(flight->mapToDto(flight)).collect(Collectors.toList());
+		List<FlightDto> existingFlight =impl.sortFlights(flightListDto,SortOrder.ASC,SortOrder.DESC);
 		assertNotNull(existingFlight);
 		assertEquals(3,existingFlight.size());
 		assertEquals(750.00,existingFlight.get(0).getPrice());
@@ -68,16 +83,17 @@ public class FlightServiceImplTest {
 		assertEquals(850.00,existingFlight.get(2).getPrice());
 
 	}
-	@Test
-	public void testFindFlightsWithcDescendingDuration() { 
-		Mockito.when(repo.findByOriginAndDestination(anyString(), anyString())).thenReturn(flightList);
-		List<FlightDto> existingFlight =impl.findAll("AMS","DEL", SortField.DURATION,SortOrder.DESC);
-		assertNotNull(existingFlight);
-		assertEquals(3,existingFlight.size());
-		assertEquals(750.00,existingFlight.get(0).getPrice());
-		assertEquals(800.00,existingFlight.get(2).getPrice());
-		assertEquals(850.00,existingFlight.get(1).getPrice());
-
+	
+	public FlightDto mapToDto(Flight flight) { 
+		FlightDto dto = new FlightDto();
+		dto.setId(flight.getId()); 
+		dto.setFlightNumber(flight.getFlightNumber());
+		dto.setOrigin(flight.getOrigin());
+		dto.setDestination(flight.getDestination());
+		dto.setDepartureTime(flight.getDepartureTime());
+		dto.setArrivalTime(flight.getArrivalTime()); 
+		dto.setPrice(flight.getPrice());
+		return dto;
 	}
 
 
