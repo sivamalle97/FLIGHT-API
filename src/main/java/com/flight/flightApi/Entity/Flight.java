@@ -35,9 +35,9 @@ public class Flight {
 	@NotNull
 	private String destination;
 	
-	private LocalDateTime departureTime;
+	private LocalDateTime departureDateTime;
 	
-	private LocalDateTime arrivalTime;
+	private LocalDateTime arrivalDateTime;
 	
 	private Double price;
 

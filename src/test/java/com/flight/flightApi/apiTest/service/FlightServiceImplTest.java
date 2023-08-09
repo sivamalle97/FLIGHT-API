@@ -90,8 +90,8 @@ public class FlightServiceImplTest {
 		dto.setFlightNumber(flight.getFlightNumber());
 		dto.setOrigin(flight.getOrigin());
 		dto.setDestination(flight.getDestination());
-		dto.setDepartureTime(flight.getDepartureTime());
-		dto.setArrivalTime(flight.getArrivalTime()); 
+		dto.setDepartureDateTime(flight.getDepartureDateTime());
+		dto.setArrivalDateTime(flight.getArrivalDateTime()); 
 		dto.setPrice(flight.getPrice());
 		return dto;
 	}

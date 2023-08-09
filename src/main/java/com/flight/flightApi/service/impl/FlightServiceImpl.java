@@ -11,12 +11,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.flight.flightApi.Entity.Flight;
-import com.flight.flightApi.Exception.DataNotFoundInDbException;
-import com.flight.flightApi.Exception.FiledNotFoundException;
+import com.flight.flightApi.Exception.FlightDataNotFoundException;
 import com.flight.flightApi.dto.FlightDto;
 import com.flight.flightApi.enumaration.SortOrder;
 import com.flight.flightApi.repository.FlightRepository;
 import com.flight.flightApi.service.FlightService;
+
+import lombok.Data;
 
 @Service
 public class FlightServiceImpl implements FlightService {
@@ -48,9 +49,9 @@ public class FlightServiceImpl implements FlightService {
 		List<Flight> list = flightRepository.findByOriginAndDestination(origin, destination);
 
 		if(list.isEmpty()) {
-			throw new DataNotFoundInDbException("DATA IS NOT FOUND");
+			throw new FlightDataNotFoundException("Fligth Data is Not Found");
 		}
-		LOGGER.info("DATA fetching based on origin and destination");
+		LOGGER.info("Flight Data fetching based on origin and destination");
 		return list.stream().map(flight->mapToDto(flight)).collect(Collectors.toList());
 	}
 
@@ -69,7 +70,7 @@ public class FlightServiceImpl implements FlightService {
 	 */
 	@Override
 	public List<FlightDto> sortFlights(List<FlightDto> flightDto,SortOrder priceSort,SortOrder durationSort) {
-
+	
 		flightsListDto = flightDto;// priceSort is null or not, duratonSort
 		flightsListDto = sortByPrice(priceSort);
 		flightsListDto = sortByDuration(durationSort,priceSort);
@@ -111,31 +112,31 @@ public class FlightServiceImpl implements FlightService {
 	private List<FlightDto> sortByDuration(SortOrder durationSort,SortOrder priceSort){
 
 		if(durationSort != null ) {
-			if(priceSort==null) {
+			if(priceSort==null) { 
 				if(durationSort.ASC.equals(durationSort)) {
-					flightsListDto.sort(Comparator.comparing(flight->Duration.between(flight.getDepartureTime(),flight.getArrivalTime())));
+					flightsListDto.sort(Comparator.comparing(flight->Duration.between(flight.getDepartureDateTime(),flight.getArrivalDateTime())));
 				}else if(durationSort.DESC.equals(durationSort)) {
-					flightsListDto.sort(Comparator.comparing(flight->Duration.between(((FlightDto) flight).getDepartureTime(),((FlightDto) flight).getArrivalTime())).reversed());
+					flightsListDto.sort(Comparator.comparing(flight->Duration.between(((FlightDto) flight).getDepartureDateTime(),((FlightDto) flight).getArrivalDateTime())).reversed());
 				}
 				LOGGER.info("Flight list sorted based on Duration and order type");
 			}else {
 				if(priceSort.ASC.equals(priceSort)) {
 					if(durationSort.ASC.equals(durationSort)) {
 						flightsListDto.sort(Comparator.comparingDouble(FlightDto::getPrice)
-								.thenComparing(Comparator.comparing(flight->Duration.between(flight.getDepartureTime(),flight.getArrivalTime()))));
+								.thenComparing(Comparator.comparing(flight->Duration.between(flight.getDepartureDateTime(),flight.getArrivalDateTime()))));
 					}else if(durationSort.DESC.equals(durationSort)) {
 						flightsListDto.sort(Comparator.comparingDouble(FlightDto::getPrice)
-								.thenComparing(Comparator.comparing(flight->Duration.between(((FlightDto) flight).getDepartureTime(),((FlightDto) flight).getArrivalTime()))
+								.thenComparing(Comparator.comparing(flight->Duration.between(((FlightDto) flight).getDepartureDateTime(),((FlightDto) flight).getArrivalDateTime()))
 										.reversed()));
 					}
 				}
 				else if(priceSort.DESC.equals(priceSort)) {
 					if(durationSort.ASC.equals(durationSort)) {
 						flightsListDto.sort(Comparator.comparingDouble(FlightDto::getPrice).reversed()
-								.thenComparing(Comparator.comparing(flight->Duration.between(flight.getDepartureTime(),flight.getArrivalTime()))));
+								.thenComparing(Comparator.comparing(flight->Duration.between(flight.getDepartureDateTime(),flight.getArrivalDateTime()))));
 					}else if (durationSort.DESC.equals(durationSort)) {
 						flightsListDto.sort(Comparator.comparingDouble(FlightDto::getPrice)
-								.thenComparing(Comparator.comparing(flight->Duration.between(flight.getDepartureTime(),flight.getArrivalTime())))
+								.thenComparing(Comparator.comparing(flight->Duration.between(flight.getDepartureDateTime(),flight.getArrivalDateTime())))
 								.reversed());
 					}
 				}
@@ -152,8 +153,8 @@ public class FlightServiceImpl implements FlightService {
 		dto.setFlightNumber(flight.getFlightNumber());
 		dto.setOrigin(flight.getOrigin());
 		dto.setDestination(flight.getDestination());
-		dto.setDepartureTime(flight.getDepartureTime());
-		dto.setArrivalTime(flight.getArrivalTime()); 
+		dto.setDepartureDateTime(flight.getDepartureDateTime());
+		dto.setArrivalDateTime(flight.getArrivalDateTime()); 
 		dto.setPrice(flight.getPrice());
 		return dto;
 	}

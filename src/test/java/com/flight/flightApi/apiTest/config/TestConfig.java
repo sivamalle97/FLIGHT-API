@@ -14,10 +14,10 @@ import com.flight.flightApi.service.impl.FlightServiceImpl;
 public class TestConfig {
 
 
-	@Bean
-	public FlightService service() {
-		return new FlightServiceImpl(); 
-	}
+//	@Bean
+//	public FlightService service() {
+//		return new FlightServiceImpl(null); 
+//	}
 
 	
 	@Bean

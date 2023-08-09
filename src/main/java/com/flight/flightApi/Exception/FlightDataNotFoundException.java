@@ -8,8 +8,7 @@ import lombok.Setter;
 @Component
 @Setter
 @Getter
-//@ResponseStatus(HttpStatus.NOT_FOUND)
-public class DataNotFoundInDbException extends RuntimeException {
+public class FlightDataNotFoundException extends RuntimeException {
 
 	/**
 	 * 
@@ -18,10 +17,10 @@ public class DataNotFoundInDbException extends RuntimeException {
 	private String message;
 
 
-	public DataNotFoundInDbException() {
+	public FlightDataNotFoundException() {
 
 	}
-	public DataNotFoundInDbException(String msg) {
+	public FlightDataNotFoundException(String msg) {
 		super(msg);
 		this.message=msg;
 		

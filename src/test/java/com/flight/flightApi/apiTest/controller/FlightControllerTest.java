@@ -28,15 +28,15 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import com.flight.flightApi.Entity.Flight;
-import com.flight.flightApi.controller.FlightRestController;
+import com.flight.flightApi.controller.FlightController;
 import com.flight.flightApi.dto.FlightDto;
 import com.flight.flightApi.enumaration.SortOrder;
 import com.flight.flightApi.service.FlightService;
 
 @EnableWebMvc
 @ExtendWith(MockitoExtension.class)
-@WebMvcTest(FlightRestController.class)
-public class FlightRestControllerTest {
+@WebMvcTest(FlightController.class)
+public class FlightControllerTest {
 
 	@Autowired
 	private MockMvc mockMvc;
@@ -74,7 +74,7 @@ public class FlightRestControllerTest {
 		mockMvc.perform(MockMvcRequestBuilders.get("/flight/api/all/AMS/DEL"))
 		.andExpect(status().isOk());		
 		assertNotNull(existingFlight);
-		assertEquals(4,existingFlight.size());
+		assertEquals(4,existingFlight.size()); 
 	}
 
 	@Test

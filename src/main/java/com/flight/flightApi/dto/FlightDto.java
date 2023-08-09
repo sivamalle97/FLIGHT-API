@@ -16,9 +16,9 @@ public class FlightDto {
 	
 	private String destination;
 	
-	private LocalDateTime departureTime;
+	private LocalDateTime departureDateTime;
 	
-	private LocalDateTime arrivalTime;
+	private LocalDateTime arrivalDateTime;
 	
 	private Double price;
 

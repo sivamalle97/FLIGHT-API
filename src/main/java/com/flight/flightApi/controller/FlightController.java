@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,20 +15,21 @@ import com.flight.flightApi.dto.FlightDto;
 import com.flight.flightApi.enumaration.SortOrder;
 import com.flight.flightApi.service.FlightService;
 
-import lombok.extern.slf4j.Slf4j;
+import lombok.AllArgsConstructor;
 
 
 @RestController
 @RequestMapping("/flight/api")
-public class FlightRestController {
+@AllArgsConstructor
+public class FlightController {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(FlightRestController.class);
-	@Autowired
-	private FlightService flightService;
+	private static final Logger LOGGER = LoggerFactory.getLogger(FlightController.class);
+
+	private final FlightService flightService;
 	
 	
 
-	/*
+	/**
 	 * Here we calling REST-API GET call. It will fetch the data from database based on given parameters
 	 * In this method origin and destination parameters are mandatory. suppose any one of them is null 
 	 * It will throw FileNotFoundException Exception
