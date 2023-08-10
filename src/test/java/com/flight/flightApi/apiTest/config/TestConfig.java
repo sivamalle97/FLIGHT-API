@@ -4,7 +4,6 @@ import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import com.flight.flightApi.enumaration.SortField;
 import com.flight.flightApi.enumaration.SortOrder;
 import com.flight.flightApi.repository.FlightRepository;
 import com.flight.flightApi.service.FlightService;

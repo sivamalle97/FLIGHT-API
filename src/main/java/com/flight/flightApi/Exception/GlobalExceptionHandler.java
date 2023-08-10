@@ -21,6 +21,7 @@ public class GlobalExceptionHandler {
 	public ResponseEntity<String> handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException methodArgumentTypeMismatchException){
 		return new ResponseEntity<String>("Enter valid data",HttpStatus.BAD_REQUEST);
 	}
+	
 
 
 	@ExceptionHandler(InvalidDataAccessResourceUsageException.class)

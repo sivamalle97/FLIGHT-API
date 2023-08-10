@@ -31,8 +31,7 @@ public class FlightController {
 
 	/**
 	 * Here we calling REST-API GET call. It will fetch the data from database based on given parameters
-	 * In this method origin and destination parameters are mandatory. suppose any one of them is null 
-	 * It will throw FileNotFoundException Exception
+	 * In this method origin and destination parameters are mandatory. 
 	 * @param origin
 	 * @param destination
 	 */

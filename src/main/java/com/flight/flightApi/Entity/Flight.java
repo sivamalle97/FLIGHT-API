@@ -24,15 +24,12 @@ public class Flight {
 	private Long id;
 	
 	@NotBlank
-	@NotNull
 	private String flightNumber;
 	
 	@NotBlank
-	@NotNull
 	private String origin;
 	
 	@NotBlank
-	@NotNull
 	private String destination;
 	
 	private LocalDateTime departureDateTime;

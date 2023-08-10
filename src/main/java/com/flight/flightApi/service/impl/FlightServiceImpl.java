@@ -26,7 +26,6 @@ public class FlightServiceImpl implements FlightService {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(FlightServiceImpl.class);
 
-	//@Autowired
 	@NonNull
 	private  final FlightRepository flightRepository;
 
