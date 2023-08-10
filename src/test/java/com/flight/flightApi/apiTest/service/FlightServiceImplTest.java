@@ -19,14 +19,10 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
 
 import com.flight.flightApi.Entity.Flight;
-import com.flight.flightApi.apiTest.config.TestConfig;
 import com.flight.flightApi.dto.FlightDto;
-import com.flight.flightApi.enumaration.SortField;
 import com.flight.flightApi.enumaration.SortOrder;
 import com.flight.flightApi.repository.FlightRepository;
 import com.flight.flightApi.service.impl.FlightServiceImpl;
@@ -37,19 +33,12 @@ public class FlightServiceImplTest {
 	@Mock
 	private FlightRepository repo;
 
-	@InjectMocks
-	private FlightServiceImpl impl;
-
-
-
 	@Autowired
 	SortOrder sortOrder;
 
 	List<Flight> flightList;
 	List<FlightDto> flightListDto;
 	
-
-
 	@BeforeEach
 	public void setup() {
 		MockitoAnnotations.openMocks(this);
@@ -64,6 +53,7 @@ public class FlightServiceImplTest {
 
 	@Test
 	public void testFindFlightsList() {
+		FlightServiceImpl impl = new FlightServiceImpl(repo);
 		Mockito.when(repo.findByOriginAndDestination(anyString(), anyString())).thenReturn(flightList);
 		List<FlightDto> existingFlight =impl.flightsList("AMS","DEL");
 		assertNotNull(existingFlight);
@@ -73,6 +63,7 @@ public class FlightServiceImplTest {
 	
 	@Test
 	public void testFindFlightsWithAsscendingPriceDescendingDuration() { 		
+		FlightServiceImpl impl = new FlightServiceImpl(repo);
 		lenient().when(repo.findByOriginAndDestination(anyString(), anyString())).thenReturn(flightList);
 		flightListDto =  flightList.stream().map(flight->mapToDto(flight)).collect(Collectors.toList());
 		List<FlightDto> existingFlight =impl.sortFlights(flightListDto,SortOrder.ASC,SortOrder.DESC);

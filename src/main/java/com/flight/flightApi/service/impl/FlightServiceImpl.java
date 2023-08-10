@@ -7,7 +7,6 @@ import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.flight.flightApi.Entity.Flight;
@@ -18,14 +17,18 @@ import com.flight.flightApi.repository.FlightRepository;
 import com.flight.flightApi.service.FlightService;
 
 import lombok.Data;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 
 @Service
+@RequiredArgsConstructor
 public class FlightServiceImpl implements FlightService {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(FlightServiceImpl.class);
 
-	@Autowired
-	private  FlightRepository flightRepository;
+	//@Autowired
+	@NonNull
+	private  final FlightRepository flightRepository;
 
 	List<FlightDto> flightsListDto;
 

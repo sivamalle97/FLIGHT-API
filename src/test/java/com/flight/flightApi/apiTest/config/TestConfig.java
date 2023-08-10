@@ -14,10 +14,10 @@ import com.flight.flightApi.service.impl.FlightServiceImpl;
 public class TestConfig {
 
 
-//	@Bean
-//	public FlightService service() {
-//		return new FlightServiceImpl(null); 
-//	}
+	@Bean
+	public FlightService service() {
+		return new FlightServiceImpl(repo()); 
+	}
 
 	
 	@Bean
@@ -28,6 +28,11 @@ public class TestConfig {
 	
 	@Bean
 	public SortOrder sortOrder() {
+		return null;
+	}
+	
+	@Bean
+	public FlightRepository repo() {
 		return null;
 	}
 
