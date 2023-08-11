@@ -43,7 +43,7 @@ public class FlightServiceImpl implements FlightService {
 
 	 * @return List of Flight
 
-	 *  @exception Data Not Found
+	 * @exception Data Not Found
 
 	 */
 	@Override
